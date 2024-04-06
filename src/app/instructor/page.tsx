@@ -1,5 +1,6 @@
-import Image from 'next/image';
-import logo from './logo.png';
+import { TopNavbar } from "../_components/TopNavbar";
+import { SideNavbar } from "../_components/SideNavbar";
+import { QuizEdit } from "../_components/QuizEdit";
 
 export default function Instructor({
   children,
@@ -7,25 +8,11 @@ export default function Instructor({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{width: "100vw", height: "100vh"}}>
-      <div>
-        <Image
-          src={logo}
-          width={30}
-          height={30}
-          alt="logo"
-        />
-      </div>
-      <div className="flex col" style={{width: "200px", height: "100%", borderRight: "1px solid black"}}>
-        <div style={{width: "200px", height: "40px", borderBottom: "1px solid black"}}>
-          Class
-        </div>
-        <div style={{width: "200px", height: "40px", borderBottom: "1px solid black"}}>
-          Class
-        </div>
-        <div style={{width: "200px", height: "40px", borderBottom: "1px solid black"}}>
-          Class
-        </div>
+    <div className="flex col" style={{width: "100vw", height: "100vh"}}>
+      <TopNavbar />
+      <div className='flex' style={{height: "100%"}}>
+        <SideNavbar />
+        <QuizEdit />
       </div>
     </div>
   );
