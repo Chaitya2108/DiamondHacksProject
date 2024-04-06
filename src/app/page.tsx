@@ -147,12 +147,12 @@ export default function Home() {
               Click Here
             </div>
           </div>
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20">
+          <Link href="/instructor" className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20">
             <h3 className="text-center text-2xl font-bold">Student</h3>
             <div onClick = {toggleStudentVisibility} className="text-lg">
               Click Here
             </div>
-          </div>
+          </Link>
         </div>
         {profIsVisible && <InstBar />}
         {studentIsVisible && <PasswordBar />}    
