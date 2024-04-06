@@ -3,16 +3,16 @@ import logo from '~/images/logo.png';
 
 export const TopNavbar = () => {
   return (
-    <div className="flex" style={{borderBottom: "1px solid black"}}>
+    <div className="flex" style={{borderBottom: "1px solid black", height: "3rem", padding: "0.2rem", alignItems: "center", gap: "0.5rem"}}>
       <Image
         src={logo}
-        width={30}
-        height={30}
+        width={40}
+        height={40}
         alt="logo"
       />
-      <div>
+      <h1>
         CSE12
-      </div>
+      </h1>
     </div>
   )
 }
