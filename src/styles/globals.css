@@ -51,6 +51,23 @@ input, textarea {
   border-radius: 3px;
   cursor: pointer;
   color: #505050;
+  font-weight: 500;
+}
+
+.case-btn {
+  height: min-content;
+  width: min-content;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #505050;
+  font-size: 11pt;
+  text-wrap: nowrap;
+  font-weight: 500;
+}
+
+.case-btn.active {
+  background-color: hsl(0, 0%, 92%);
 }
 
 .btn:hover {

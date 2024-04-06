@@ -3,7 +3,7 @@ import logo from '~/images/logo.png';
 
 export const TopNavbar = () => {
   return (
-    <div className="flex" style={{borderBottom: "1px solid black", height: "3rem", padding: "0.2rem", alignItems: "center", gap: "0.5rem"}}>
+    <div className="flex" style={{borderBottom: "2px solid #dcdcdc", height: "3rem", padding: "0.2rem", alignItems: "center", gap: "0.5rem"}}>
       <Image
         src={logo}
         width={40}
