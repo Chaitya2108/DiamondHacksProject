@@ -6,13 +6,13 @@ export const QuizEdit = () => {
           <button className="btn" style={{marginLeft: "39.5%"}}>Publish</button>
         </div>
         <div className='flex full-size'>
-          <div className='edit-box' style={{width: "50%", height: "100%", borderRight: "2px solid #dcdcdc"}}>
+          <div className='edit-box' style={{width: "48%", height: "100%", borderRight: "2px solid #dcdcdc"}}>
             <h3>Description</h3>
             <textarea id="w3review" name="w3review" style={{height: "100%"}}>
               Please implement a function that calculates the first n Fibonacci numbers using your toes and you shall receive A++.
             </textarea>
           </div>
-          <div className='flex col' style={{width: "50%", height: "100%"}}>
+          <div className='flex col' style={{width: "52%", height: "100%"}}>
             <div className='edit-box' style={{width: "100%", height: "50%", borderBottom: "2px solid #dcdcdc"}}>
               <h3>Code</h3>
               <textarea className='flex col' id="w3review" name="w3review" style={{height: "100%"}}>
