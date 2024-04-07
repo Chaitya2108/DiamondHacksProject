@@ -64,17 +64,3 @@ export async function runTests(data: testInput) {
     });
   });
 }
-
-console.log(
-  await runTests({
-    id: "123",
-    lang: "js",
-    tests: [
-      { input: [1, 1], expected: 2 },
-      { input: [1, 2], expected: 3 },
-      { input: [1, 5], expected: 3 },
-      { input: [5], expected: 3 },
-    ],
-    submission: `function add(a, b) { return a + b; }`,
-  }),
-);
