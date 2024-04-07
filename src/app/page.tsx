@@ -8,14 +8,28 @@ import { useRouter } from "next/navigation";
 import {redirect} from "next/navigation";
 import React, { use, useState } from 'react';
 import { FormEvent, ChangeEvent } from 'react';
+import qs from 'qs';
 
 
 function InstBar() {
+  const [formData, setFormData] = useState({
+    'username': ''
+  });
   const router = useRouter();
   
+  const handleChange = (e) => {
+    const fieldName = e.target.name
+    const fieldValue = e.target.value
+    setFormData(prevState => ({
+      ...prevState,
+      [fieldName]: fieldValue
+    }))
+  }
   const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    router.push('/instructor')
+    console.log(formData)
+    const queryString = qs.stringify(formData);
+    router.push(`/instructor?${queryString}`)
   }
 
   return(
@@ -25,7 +39,7 @@ function InstBar() {
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Class Name
       </label>
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Class Name"></input>
+      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Class Name" onChange={handleChange}></input>
     </div>
     <div className="flex items-center justify-between">
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
@@ -38,36 +52,60 @@ function InstBar() {
 }
 
 function PasswordBar() {
-  const router = useRouter();
+  // const router = useRouter();
   
-  const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   router.push('/student')
+  // }
+  const [formData, setFormData] = useState({
+    'classid': '',
+    'name': '',
+    'pid': ''
+  })
+
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    const fieldName = e.target.name
+    const fieldValue = e.target.value
+
+    setFormData(prevState => ({
+      ...prevState,
+      [fieldName]: fieldValue
+    }))
+  }
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData)
+    localStorage.setItem('formData',JSON.stringify(formData))
     router.push('/student')
   }
 
   return (
     <div className="w-full max-w-xs">
-  <form  onSubmit={(event) => handleSubmit(event)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+  <form  onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Class ID
       </label>
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Class ID"></input>
+      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="classid" name = "classid" type="text" onChange={handleChange} placeholder="Class ID"></input>
     </div>
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Full Name
       </label>
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Full Name"></input>
+      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" name="name" type="text" onChange={handleChange} placeholder="Full Name"></input>
     </div>
     <div className="mb-4">
       <label className="block text-gray-700 text-sm font-bold mb-2">
         PID
       </label>
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="PID"></input>
+      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="pid" name="pid" type="text" onChange={handleChange} placeholder="PID"></input>
     </div>
     <div className="flex items-center justify-between">
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"  type="submit">
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
         Submit
       </button>    
     </div>

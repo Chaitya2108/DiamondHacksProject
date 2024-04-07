@@ -1,6 +1,6 @@
 import { TopNavbar } from "../_components/TopNavbar";
 import { SideNavbar } from "../_components/SideNavbar";
-import { QuizEdit } from "../_components/QuizEdit";
+import { QuizContent } from "../_components/QuizContent";
 
 export default function Instructor({
   children,
@@ -12,7 +12,7 @@ export default function Instructor({
       <TopNavbar />
       <div className='flex' style={{height: "100%"}}>
         <SideNavbar />
-        <QuizEdit />
+        <QuizContent />
       </div>
     </div>
   );

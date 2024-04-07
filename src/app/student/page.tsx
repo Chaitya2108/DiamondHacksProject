@@ -1,22 +1,36 @@
+'use client';
+
 import { TopNavbar } from "../_components/TopNavbar";
 import { SideNavbar } from "../_components/SideNavbar";
 import { QuizEdit } from "../_components/QuizEdit";
+import { StudentEdit } from "../_components/StudentEdit"
+
+import { CreatePost } from "~/app/_components/create-post";
+// import { api } from "~/trpc/server";
+import { useRouter } from "next/navigation";
+import {redirect} from "next/navigation";
+import React, { use, useState } from 'react';
+import { FormEvent, ChangeEvent } from 'react';
+import qs from 'qs';
 
 export default function Student({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const formData = localStorage.getItem('formData')
+  const parsed = JSON.parse(formData)
+  const name = parsed.name
+  console.log(name)
   return (
     <div className="flex col" style={{width: "100vw", height: "100vh"}}>
     <div className="w-screen">
-        <TopNavbar />
+      {/* api needs to pass this */}
+        <TopNavbar classNum="CSE 30" ID={name}/>
     </div>
     <div className='flex' style={{height: "100%"}}>
-        <div style={{width: "40%"}}>
-            <SideNavbar />
-        </div>     
-        <QuizEdit />
+        <SideNavbar />     
+        <StudentEdit />
       </div>
     </div>
     
