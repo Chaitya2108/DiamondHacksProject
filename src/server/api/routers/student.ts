@@ -30,6 +30,7 @@ export const studentRouter = createTRPCRouter({
     viewResults: publicProcedure
         .input(z.object({ joinCode: z.string(), studentId: z.string() }))
         .query(async ({ input }) => {
-            // TODO get run results
+            const results = await db.student.viewResults(input.joinCode, input.studentId);
+            return results;
         }),
 });

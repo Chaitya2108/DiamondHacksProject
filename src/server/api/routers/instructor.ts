@@ -19,11 +19,12 @@ export const instructorRouter = createTRPCRouter({
     viewScores: publicProcedure
         .input(z.object({ joinCode: z.string()}))
         .query(async ({ input }) => {
-            // TODO get scores
+            const scores = await db.instructor.viewScores(input.joinCode);
+            return scores;
         }),
     clear: publicProcedure
         .input(z.object({ joinCode: z.string() }))
         .mutation(async ({ input }) => {
-            // TODO clear assignment
+            await db.instructor.clearAssignment(input.joinCode);
         }),
 });
