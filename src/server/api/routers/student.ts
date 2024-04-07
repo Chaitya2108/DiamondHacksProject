@@ -13,8 +13,6 @@ export const studentRouter = createTRPCRouter({
             } catch(e) {
                 throw e;
             }
-            const assignment = await db.student.getAssignment(input.joinCode);
-            return assignment;
         }),
     assignment: publicProcedure
         .input(z.object({joinCode: z.string() }))

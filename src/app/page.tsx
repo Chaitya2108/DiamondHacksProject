@@ -83,9 +83,17 @@ function PasswordBar() {
     }))
   }
   
-  const handleSubmit = (e) => {
+  const joinStudentMutate = api.student.join.useMutation();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData)
+    try {
+      await joinStudentMutate.mutateAsync({ name: formData.name, joinCode: formData.classid, id: formData.pid });
+    } catch (e) {
+      alert(e.message)
+      return;
+    }
     localStorage.setItem('formData',JSON.stringify(formData))
     router.push('/student')
   }
