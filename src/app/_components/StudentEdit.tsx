@@ -1,4 +1,37 @@
-export const StudentEdit = (props) => {
+import { useState } from "react";
+import { api } from "~/trpc/react"
+
+export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) => {
+  const assignment = api.student.assignment.useQuery({ joinCode }, { refetchInterval: 2000 });
+  const results = api.student.viewResults.useQuery({ joinCode, studentId: id }, { refetchInterval: 2000 });
+  let resultText = '';
+  if (results.data === null || results.data === undefined) {
+    resultText = 'No Test Cases Yet';
+  } else {
+    const actualResults = results.data.results;
+    if (typeof(actualResults) === 'string') {
+      resultText = actualResults;
+    } else {
+      for (const result of actualResults) {
+        resultText += `${result.name}: ${result.passed ? "PASSED<br>" : "FAILED<br>"+result.msg+'<br>'}`;
+      }
+    }
+  }
+  const prompt = assignment.data === null ? "No assignment at this time" : assignment.data?.prompt;
+  const lang = assignment.data === null ? "js" : assignment.data?.language;
+  const starterCode = assignment.data === null ? "" : assignment.data?.starterCode;
+  const [code, setCode] = useState('');
+
+  const submitStudentMutate = api.student.submit.useMutation();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await submitStudentMutate.mutateAsync({ joinCode, studentId: id, submission: code })
+  }
+
+  const handleChange = (e) => {
+    setCode(e.target.value)
+  }
+
     return (
       <div className="flex col full-size">
           <div className="flex" style={{width: "100%", height: "3rem", borderBottom: "2px solid #dcdcdc", alignItems: "center", padding: "1rem"}}>
@@ -11,14 +44,13 @@ export const StudentEdit = (props) => {
               <h3>Description</h3>
               {/* Description from the API */}
               <div id="w3review" style={{height: "100%"}}>
-                Please implement a function that calculates the first n Fibonacci numbers using your toes and you shall receive A++.
-                {props.description}
+                {prompt}
               </div>
             </div>
             <div className='flex col' style={{width: "60%", height: "100%"}}>
               <div className='edit-box' style={{width: "100%", height: "60%", borderBottom: "2px solid #dcdcdc"}}>
                 <h3>Code</h3>
-                <textarea className='flex col' id="w3review" name="w3review" style={{height: "100%"}}>
+                <textarea className='flex col' id="w3review" name="w3review" style={{height: "100%"}} value={code} onChange={handleChange}>
                     {/* Starter code needs to come from API */}
                     {/* {props.starterCode} */}
                 </textarea>
@@ -40,11 +72,11 @@ export const StudentEdit = (props) => {
                 </div> */}
                 <h3>Test Cases</h3>
                 {/* If no test cases, then */}
-                <p>No Test Cases Yet</p>
+                <p>{resultText}</p>
                 {/* else */}
                 {/** go through all test cases one by one */}
                 
-                <form style={{position: "relative", width: "100%", height: "100%"}}>
+                <form onSubmit={(event) => handleSubmit(event)} style={{position: "relative", width: "100%", height: "100%"}}>
                 <button className=" absolute right-0 bottom-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                 Submit
                 </button>   

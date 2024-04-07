@@ -30,7 +30,7 @@ export default function Student({
     </div>
     <div className='flex' style={{height: "100%"}}>
         <SideNavbar />     
-        <StudentEdit />
+        <StudentEdit joinCode={parsed.classid} id={parsed.pid}/>
       </div>
     </div>
     
