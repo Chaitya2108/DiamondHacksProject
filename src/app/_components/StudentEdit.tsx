@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react"
 
 export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) => {
@@ -27,6 +27,12 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
     event.preventDefault();
     await submitStudentMutate.mutateAsync({ joinCode, studentId: id, submission: code })
   }
+
+
+
+  useEffect(() => {
+    setCode(assignment.data === null ? "" : assignment.data?.starterCode);
+  }, [assignment])
 
   const handleChange = (e) => {
     setCode(e.target.value)
