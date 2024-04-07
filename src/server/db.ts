@@ -46,7 +46,7 @@ export const db = {
             const numPassed = Array<number>(classToJoin.assignment.tests.length).fill(0);
             let numTotal = 0;
             for (const submission of classToJoin.assignment.submissions.values()) {
-                if (submission.results === null) {
+                if (submission.results === null || typeof(submission.results) === 'string') {
                     continue;
                 }
                 numTotal += 1;
@@ -106,7 +106,7 @@ export const db = {
             let testResults;
             try {
                 testResults = await runTests({ id: submissionId, lang: classToJoin.assignment.language, tests: classToJoin.assignment.tests, submission});
-                submissionObj.results = testResults;
+                submissionObj.results = testResults as ITestCaseResult[];
             } catch (e) {
                 submissionObj.results = "Error";
             }
