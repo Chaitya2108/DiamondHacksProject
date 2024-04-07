@@ -11,11 +11,10 @@ const connection = await amqp.connect(env.AMQP_URL, {
 const jsonSchema = z.object({
   id: z.string(),
   lang: z.enum(["js", "py"]),
-  boilerplate: z.string(),
   tests: z.array(
     z.object({
-      expected: z.string(),
-      actual: z.string(),
+      input: z.union([z.string(), z.number()]),
+      expected: z.union([z.string(), z.number()]),
     }),
   ),
   submission: z.string(),

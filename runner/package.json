@@ -2,9 +2,10 @@
   "name": "runner",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "bun run queueRunner.ts"
+    "start": "node build/src/main.js",
+    "build": "tsc -p tsconfig.json"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,9 @@
   "dependencies": {
     "amqplib": "^0.10.3",
     "dotenv": "^16.4.5",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-javascript": "^0.21.0",
+    "tree-sitter-python": "^0.21.0",
     "zod": "^3.22.4"
   }
 }
