@@ -9,7 +9,7 @@ export const db = {
             // very safe
             const joinCode = Math.random().toString(36).substring(2, 8);
             classes.set(joinCode, {
-                name,
+                name: name,
                 students: [],
                 assignment: null,
             });

@@ -17,7 +17,7 @@ function InstBar() {
     'username': ''
   });
   const router = useRouter();
-  
+
   
   const handleChange = (e) => {
     const fieldName = e.target.name
@@ -34,8 +34,9 @@ function InstBar() {
     event.preventDefault();
     console.log(formData)
     const queryString = qs.stringify(formData);
-    const joinCode = await createInstructorMutate.mutateAsync({ name: formData.username })
-    localStorage.setItem('formData',JSON.stringify({ username: formData.username, joinCode }))
+    const joinCode = await createInstructorMutate.mutateAsync({ name: formData.classid })
+    console.log(`formData.username: ${formData.username}`)
+    localStorage.setItem('formData',JSON.stringify({ className: formData.classid, joinCode: joinCode }))
     router.push('/instructor');
   }
 
@@ -46,7 +47,7 @@ function InstBar() {
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Class Name
       </label>
-      <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Class Name" onChange={handleChange}></input>
+      <input name="classid" className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Class Name" onChange={handleChange}></input>
     </div>
     <div className="flex items-center justify-between">
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
