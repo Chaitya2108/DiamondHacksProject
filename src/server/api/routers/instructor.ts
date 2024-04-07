@@ -12,9 +12,9 @@ export const instructorRouter = createTRPCRouter({
             return joinCode;
         }),
     assign: publicProcedure
-        .input(z.object({ joinCode: z.string(), prompt: z.string(), starterCode: z.string(), tests: z.array(z.object({ input: z.string(), output: z.string() })) }))
+        .input(z.object({ joinCode: z.string(), prompt: z.string(), starterCode: z.string(), language: z.enum(['js', 'py']), tests: z.array(z.object({ input: z.string(), output: z.string() })) }))
         .mutation(async ({ input }) => {
-            await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.tests);
+            await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.language, input.tests);
         }),
     viewScores: publicProcedure
         .input(z.object({ joinCode: z.string()}))
