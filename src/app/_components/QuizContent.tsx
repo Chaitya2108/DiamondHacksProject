@@ -9,6 +9,7 @@ export const QuizContent = ({joinCode}) => {
   const [isShowResult, setShowResult] = useState(false);
   const assignInstructorMutate = api.instructor.assign.useMutation();
   const clearInstructorMutate = api.instructor.clear.useMutation();
+  const viewScoresInstructorMutate = api.instructor.viewScores.useMutation();
   const [formData, setFormData] = useState({
     joinCode: joinCode,
     prompt: '',
@@ -50,6 +51,14 @@ export const QuizContent = ({joinCode}) => {
     )
   }
 
+  const result = async () => {
+    const score = await viewScoresInstructorMutate.mutateAsync({ 
+      joinCode: joinCode,
+    })
+    console.log(`score: ${score}`);
+    setShowResult(true);
+  }
+
   const ActionButtons = () => {
     if(isShowResult) {
       return (
@@ -64,7 +73,7 @@ export const QuizContent = ({joinCode}) => {
           <div style={{width: "21.5rem", height: "100%"}}/>
           <button className="btn" onClick={()=>clear()}>Clear</button>
           <button className="btn" onClick={()=>publish()}>Publish</button>
-          <button className="btn" onClick={()=>setShowResult(true)}>Result</button>
+          <button className="btn" onClick={()=>result()}>Result</button>
         </>
       )
     }
