@@ -5,7 +5,7 @@ export const QuizResult = () => {
     <div className="flex full-size" style={{alignItems: "center", justifyContent: "center"}}>
       <BarChart
         width={800}
-        height={500}
+        height={400}
         data={[
           {name: '1', correct: 40},
           {name: '2', correct: 30},
