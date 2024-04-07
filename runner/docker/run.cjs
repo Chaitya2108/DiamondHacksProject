@@ -1,6 +1,7 @@
 const spawnSync = require("child_process").spawnSync;
 const fs = require("fs");
 const xml2js = require("xml2js");
+const readline = require("readline");
 
 if (process.argv.length < 3) {
   console.log("Usage: node run.js <lang>");
@@ -9,7 +10,20 @@ if (process.argv.length < 3) {
 
 const lang = process.argv[2];
 
+const input = fs.readFileSync(0, "utf8");
+
+const [file1, file2] = input.split("🨫");
+
+if (!file1 || !file2) {
+  console.error("Invalid input");
+  process.exit(1);
+}
+
+// Run stuff
 if (lang === "js") {
+  fs.writeFileSync("submission.js", file1);
+  fs.writeFileSync("test.js", file2);
+
   const proc = spawnSync("jest", ["test", "--json"]);
   const stdout = proc.stdout;
   const json = JSON.parse(stdout.toString());
@@ -30,7 +44,10 @@ if (lang === "js") {
     throw new Error("JSON parsing failed");
   }
 } else if (lang === "py") {
-  const proc = spawnSync("pytest", ["--junitxml=out.xml"]);
+  fs.writeFileSync("submission.py", file1);
+  fs.writeFileSync("test.py", file2);
+
+  proc = spawnSync("pytest", ["--junitxml=out.xml"]);
 
   const xml = fs.readFileSync("out.xml", "utf8");
 

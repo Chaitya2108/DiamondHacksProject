@@ -8,6 +8,9 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
+    AMQP_URL: z.string().min(1),
+    AMQP_USER: z.string().min(1),
+    AMQP_PASS: z.string().min(1),
   },
 
   /**
@@ -25,6 +28,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
+    AMQP_URL: process.env.AMQP_URL,
+    AMQP_USER: process.env.AMQP_USER,
+    AMQP_PASS: process.env.AMQP_PASS,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
