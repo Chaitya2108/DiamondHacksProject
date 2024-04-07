@@ -28,9 +28,7 @@ export const QuizEdit = ({formData, setFormData}) => {
     <div className='flex full-size'>
       <div className='edit-box' style={{width: "48%", height: "100%", borderRight: "2px solid #dcdcdc"}}>
         <h3>Description</h3>
-        <textarea id="description" name="description" style={{height: "100%"}} onChange={(e)=>setField('description', e)}>
-          {formData.prompt}
-        </textarea>
+        <textarea id="description" name="description" style={{height: "100%"}} onChange={(e)=>setField('description', e)} value={formData.prompt}/>
       </div>
       <div className='flex col' style={{width: "52%", height: "100%"}}>
         <div className='edit-box' style={{width: "100%", height: "50%", borderBottom: "2px solid #dcdcdc"}}>
@@ -40,9 +38,7 @@ export const QuizEdit = ({formData, setFormData}) => {
             <button className={`lan-btn ${formData.language === 'js' ? 'active' : ''}`} onClick={()=>setFormData({...formData, language: 'js'})}>Javascript</button>
             <button className={`lan-btn ${formData.language === 'py' ? 'active' : ''}`} onClick={()=>setFormData({...formData, language: 'py'})}>Python</button>
           </div>
-          <textarea className='flex col' id="starter_code" name="starter_code" style={{height: "100%"}} onChange={(e)=>setField('starter_code', e)}>
-            {formData.starterCode}
-          </textarea>
+          <textarea className='flex col' id="starter_code" name="starter_code" style={{height: "100%"}} onChange={(e)=>setField('starter_code', e)} value={formData.starterCode}/>
         </div>
         <div className='edit-box' style={{width: "100%", height: "50%"}}>
           <h3>Testcase</h3>

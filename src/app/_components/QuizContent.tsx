@@ -7,7 +7,8 @@ import { api } from "~/trpc/react";
 
 export const QuizContent = ({joinCode}) => {
   const [isShowResult, setShowResult] = useState(false);
-  const assignInstructorMutate = api.instructor.assign.useMutation()
+  const assignInstructorMutate = api.instructor.assign.useMutation();
+  const clearInstructorMutate = api.instructor.clear.useMutation();
   const [formData, setFormData] = useState({
     joinCode: joinCode,
     prompt: '',
@@ -33,6 +34,22 @@ export const QuizContent = ({joinCode}) => {
     })
   }
 
+  const clear = async () => {
+    await clearInstructorMutate.mutateAsync({joinCode: joinCode});
+    setFormData(
+      {
+        joinCode: joinCode,
+        prompt: '',
+        starterCode: '',
+        language: 'js',
+        tests: [
+          {input: '', expected: ''},
+          {input: '', expected: ''},
+        ]
+      }
+    )
+  }
+
   const ActionButtons = () => {
     if(isShowResult) {
       return (
@@ -45,7 +62,7 @@ export const QuizContent = ({joinCode}) => {
       return (
         <>
           <div style={{width: "21.5rem", height: "100%"}}/>
-          <button className="btn">Clear</button>
+          <button className="btn" onClick={()=>clear()}>Clear</button>
           <button className="btn" onClick={()=>publish()}>Publish</button>
           <button className="btn" onClick={()=>setShowResult(true)}>Result</button>
         </>
