@@ -13,20 +13,38 @@ export const instructorRouter = createTRPCRouter({
         }),
     assign: publicProcedure
         .input(z.object({
-                joinCode: z.string(),
-                prompt: z.string(),
-                starterCode: z.string(),
-                language: z.enum(['js', 'py']),
-                tests: z.array(z.object({
-                    input: z.array(z.union([z.string(), z.number()])),
-                    expected: z.union([z.string(), z.number()]),
-                }))
+            joinCode: z.string(),
+            prompt: z.string(),
+            starterCode: z.string(),
+            language: z.enum(['js', 'py']),
+            tests: z.array(z.object({
+                input: z.string(),
+                expected: z.string()
+            }))
         }))
         .mutation(async ({ input }) => {
-            await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.language, input.tests);
+            const transformedTests = input.tests.map(test => {
+                // input comma sepatrated
+                const input = test.input.split(',').map(i => {
+                    const trimmed = i.trim();
+                    if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+                        return trimmed.slice(1, -1);
+                    } else {
+                        return parseFloat(trimmed);
+                    }
+                });
+
+                const expected = test.expected.trim().startsWith('"') && test.expected.trim().endsWith('"') ? test.expected.trim().slice(1, -1) : parseFloat(test.expected.trim());
+
+                return {
+                    input,
+                    expected
+                }
+            });
+            await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.language, transformedTests);
         }),
     viewScores: publicProcedure
-        .input(z.object({ joinCode: z.string()}))
+        .input(z.object({ joinCode: z.string() }))
         .query(async ({ input }) => {
             const scores = await db.instructor.viewScores(input.joinCode);
             return scores;
