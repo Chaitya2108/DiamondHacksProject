@@ -17,6 +17,7 @@ function InstBar() {
   });
   const router = useRouter();
   
+  
   const handleChange = (e) => {
     const fieldName = e.target.name
     const fieldValue = e.target.value
