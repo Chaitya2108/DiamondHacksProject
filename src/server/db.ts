@@ -64,6 +64,7 @@ export const db = {
             const classToJoin = classes.get(joinCode);
             // check class exists
             if (classToJoin === undefined) {
+                console.log(classes)
                 throw new Error("Class does not exist");
             }
             // check student already in class
@@ -84,7 +85,7 @@ export const db = {
             if (classToJoin.assignment === null) {
                 return null;
             }
-            return { prompt: classToJoin.assignment.prompt, starterCode: classToJoin.assignment.starterCode };
+            return { prompt: classToJoin.assignment.prompt, starterCode: classToJoin.assignment.starterCode, language: classToJoin.assignment.language };
         },
 
         submitAssignment: async (joinCode: string, studentId: string, submission: string) => {
