@@ -4,12 +4,11 @@ import { TopNavbar } from "../_components/TopNavbar";
 import { SideNavbar } from "../_components/SideNavbar";
 import { QuizContent } from "../_components/QuizContent";
 
-export default function Instructor({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const formData = localStorage.getItem('formData')
+export default function Instructor() {
+  let formData = '{}';
+  try {
+    formData = localStorage.getItem('formData')
+  } catch {}
   const data = JSON.parse(formData)
   console.log(`data: ${data}`);
 

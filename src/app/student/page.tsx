@@ -13,12 +13,11 @@ import React, { use, useState } from 'react';
 import { FormEvent, ChangeEvent } from 'react';
 import qs from 'qs';
 
-export default function Student({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const formData = localStorage.getItem('formData')
+export default function Student() {
+  let formData = '{}';
+  try {
+    formData = localStorage.getItem('formData')
+  } catch {}
   const parsed = JSON.parse(formData)
   const name = parsed.name
   console.log(name)
