@@ -41,7 +41,8 @@ export const instructorRouter = createTRPCRouter({
                     expected
                 }
             })
-            .filter(i => i.expected !== null && i.input !== null);
+            .filter(i => (typeof i.expected === 'string' || !isNaN(i.expected)));
+            console.log(transformedTests)
             await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.language, transformedTests);
         }),
     viewScores: publicProcedure

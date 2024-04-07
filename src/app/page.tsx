@@ -210,7 +210,7 @@ export default function Home() {
       component: (
         <>
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Super Cool Name
+            Codalize
           </h1>
           <h2 className="mt-2 text-center text-2xl font-normal tracking-wide">
             An interactive classroom coding experience

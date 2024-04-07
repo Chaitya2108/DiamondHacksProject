@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react"
 
 export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) => {
@@ -13,7 +13,7 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
       resultText = actualResults;
     } else {
       for (const result of actualResults) {
-        resultText += `${result.name}: ${result.passed ? "PASSED<br>" : "FAILED<br>"+result.msg+'<br>'}`;
+        resultText += `${result.name}: ${result.passed ? "PASSED\n" : "FAILED\n"+result.msg+'\n'}`;
       }
     }
   }
@@ -27,12 +27,6 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
     event.preventDefault();
     await submitStudentMutate.mutateAsync({ joinCode, studentId: id, submission: code })
   }
-
-
-
-  useEffect(() => {
-    setCode(assignment.data === null ? "" : assignment.data?.starterCode);
-  }, [assignment])
 
   const handleChange = (e) => {
     setCode(e.target.value)
@@ -77,7 +71,7 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
                 </div> */}
                 <h3>Test Cases</h3>
                 {/* If no test cases, then */}
-                <p>{resultText}</p>
+                <samp>{resultText}</samp>
                 {/* else */}
                 {/** go through all test cases one by one */}
                 
