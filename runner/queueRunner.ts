@@ -2,58 +2,90 @@ import amqp from "amqplib";
 import { exec } from "child_process";
 import path from "path";
 
-const connection = await amqp.connect("amqp://146.190.145.149:5672", {
-  credentials: amqp.credentials.amqplain("test", "test"),
+import { z } from "zod";
+
+import "dotenv/config";
+
+const url = process.env.AMQP_URL;
+const user = process.env.AMQP_USER;
+const pass = process.env.AMQP_PASS;
+
+main();
+
+async function main() {
+  if (url === undefined || user === undefined || pass === undefined) {
+    throw new Error("AMQP_URL, AMQP_USER, AMQP_PASS must be set");
+  }
+
+  const connection = await amqp.connect(url, {
+    credentials: amqp.credentials.plain(user, pass),
+  });
+
+  const channel = await connection.createChannel();
+
+  await channel.assertQueue("jobs", { durable: false });
+
+  channel.prefetch(1);
+
+  console.log(" [*] Waiting for messages jobs");
+
+  let active = 0;
+
+  channel.consume("jobs", async (msg) => {
+    if (!msg) {
+      return;
+    }
+
+    if (active >= 10) {
+      return;
+    }
+
+    const res = await handle(JSON.parse(msg.content.toString()));
+
+    channel.sendToQueue(
+      msg.properties.replyTo,
+      Buffer.from(JSON.stringify(res)),
+      {
+        correlationId: msg.properties.correlationId,
+      },
+    );
+
+    channel.ack(msg);
+  });
+}
+
+const jsonSchema = z.object({
+  id: z.string(),
+  lang: z.enum(["js", "py"]),
+  boilerplate: z.string(),
+  tests: z.array(
+    z.object({
+      expected: z.string(),
+      actual: z.string(),
+    }),
+  ),
+  submission: z.string(),
 });
 
-const channel = await connection.createChannel();
+async function handle(json: z.infer<typeof jsonSchema>) {
+  console.log(" [*] Received %s", json.id);
 
-await channel.assertQueue("jobs", { durable: true });
+  return new Promise((resolve, reject) => {
+    resolve({ id: json.id, result: "ok" });
+  });
 
-console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", "jobs");
-
-let active = 0;
-
-channel.consume("jobs", (msg) => {
-  if (!msg) {
-    return;
-  }
-
-  if (active >= 10) {
-    return;
-  }
-
-  // ack the message
-  channel.ack(msg);
-
-  const json = JSON.parse(msg.content.toString());
-
-  if (id === undefined || lang === undefined) {
-    console.error("Invalid message received: %s", msg.content.toString());
-    return;
-  }
-
-  if (!["js", "py"].includes(lang)) {
-    console.error("Invalid lang: %s", lang);
-    return;
-  }
-
-  console.log(` [x] Received ${id} ${lang}`);
-
-  const folder = path.join(__dirname, "jobs", id);
-
-  exec(
-    `docker run --rm -v ${folder}:/app/test runner node /app/run.cjs ${lang}`,
-    (err, stdout, stderr) => {
-      if (err) {
-        console.error(err);
-      }
-
-      console.log(stdout);
-      console.error(stderr);
-
-      active--;
-    },
-  );
-  active++;
-});
+  // exec(
+  //   `docker run --rm -v ${folder}:/app/test runner node /app/run.cjs ${lang}`,
+  //   (err, stdout, stderr) => {
+  //     if (err) {
+  //       console.error(err);
+  //     }
+  //
+  //     console.log(stdout);
+  //     console.error(stderr);
+  //
+  //     active--;
+  //   },
+  // );
+  // active++;
+}
