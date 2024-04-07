@@ -32,7 +32,7 @@ export const instructorRouter = createTRPCRouter({
                     } else {
                         return parseFloat(trimmed);
                     }
-                });
+                })
 
                 const expected = test.expected.trim().startsWith('"') && test.expected.trim().endsWith('"') ? test.expected.trim().slice(1, -1) : parseFloat(test.expected.trim());
 
@@ -40,7 +40,8 @@ export const instructorRouter = createTRPCRouter({
                     input,
                     expected
                 }
-            });
+            })
+            .filter(i => i.expected !== null && i.input !== null);
             await db.instructor.pushAssignment(input.joinCode, input.prompt, input.starterCode, input.language, transformedTests);
         }),
     viewScores: publicProcedure
