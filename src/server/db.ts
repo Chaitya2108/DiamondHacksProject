@@ -2,6 +2,7 @@ import { runTests } from "./queue";
 import type { IClass, IStudent, ISubmission, ITestCase, ITestCaseResult } from "./types";
 
 const classes = new Map<string, IClass>();
+console.log("remake")
 
 export const db = {
     instructor: {
@@ -13,6 +14,7 @@ export const db = {
                 students: [],
                 assignment: null,
             });
+            console.log(classes)
             return joinCode;
         },
 

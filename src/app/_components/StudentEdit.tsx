@@ -20,7 +20,7 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
   const prompt = assignment.data === null ? "No assignment at this time" : assignment.data?.prompt;
   const lang = assignment.data === null ? "js" : assignment.data?.language;
   const starterCode = assignment.data === null ? "" : assignment.data?.starterCode;
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(starterCode);
 
   const submitStudentMutate = api.student.submit.useMutation();
   const handleSubmit = async (event) => {

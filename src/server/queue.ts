@@ -42,6 +42,7 @@ export async function runTests(data: testInput) {
 
   const q = await channel.assertQueue("", { exclusive: true });
 
+    console.log(body);
   return new Promise((resolve, reject) => {
     channel.consume(
       q.queue,
