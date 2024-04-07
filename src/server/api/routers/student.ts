@@ -23,8 +23,14 @@ export const studentRouter = createTRPCRouter({
             return assignment;
         }),
     submit: publicProcedure
-        .input(z.object({joinCode: z.string(), studentId: z.string(), submission: z.string() }))
+        .input(z.object({ joinCode: z.string(), studentId: z.string(), submission: z.string() }))
         .mutation(async ({ input }) => {
             await db.student.submitAssignment(input.joinCode, input.studentId, input.submission);
-        })
+        }),
+    viewResults: publicProcedure
+        .input(z.object({ joinCode: z.string(), studentId: z.string() }))
+        .query(async ({ input }) => {
+            const results = await db.student.viewResults(input.joinCode, input.studentId);
+            return results;
+        }),
 });

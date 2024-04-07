@@ -1,19 +1,7 @@
-export interface ISubmission {
-    id: string;
-    studentId: string;
-    submission: string;
-    result: IResult | null;
-}
-
-export interface IResult {
-    result: string | null;
-    error: string | null;
-}
-
-export interface IAssignment {
-    question: string;
-    tests: string[];
-    submissions: Map<string, ISubmission>;
+export interface IClass {
+    name: string;
+    students: IStudent[];
+    assignment: IAssignment | null;
 }
 
 export interface IStudent {
@@ -21,8 +9,27 @@ export interface IStudent {
     name: string;
 }
 
-export interface IClass {
+export interface IAssignment {
+    prompt: string;
+    starterCode: string;
+    tests: ITestCase[];
+    submissions: Map<string, ISubmission>;
+}
+
+export interface ITestCase {
+    input: string;
+    output: string;
+}
+
+export interface ISubmission {
+    id: string;
+    studentId: string;
+    submission: string;
+    results: ITestCaseResult[] | null;
+}
+
+export interface ITestCaseResult {
     name: string;
-    students: IStudent[];
-    assignment: IAssignment | null;
+    passed: boolean;
+    message: string | undefined;
 }
