@@ -7,7 +7,7 @@ export const QuizEdit = ({formData, setFormData}) => {
     for (let i = 0; i < formData.tests.length; i++) {
       if(i === activeCase-1) {
         const newTests = [...formData.tests];
-        newTests[i] = {input: input, output: output};
+        newTests[i] = {input: input, expected: output};
         setFormData({...formData, tests: newTests});
       }
     }
@@ -52,11 +52,11 @@ export const QuizEdit = ({formData, setFormData}) => {
           </div>
           <div className="flex col" >
             <span style={{color: "#696969", fontSize: "11pt"}}>Input</span>
-            <input onChange={(e)=>setTest(e.target.value, formData.tests[activeCase-1].output)} value={formData.tests[activeCase-1].input}/>
+            <input onChange={(e)=>setTest(e.target.value, formData.tests[activeCase-1].expected)} value={formData.tests[activeCase-1].input}/>
           </div>
           <div className="flex col">
             <span style={{color: "#696969", fontSize: "11pt"}}>Output</span>
-            <input onChange={(e)=>setTest(formData.tests[activeCase-1].input, e.target.value)} value={formData.tests[activeCase-1].output}/>
+            <input onChange={(e)=>setTest(formData.tests[activeCase-1].input, e.target.value)} value={formData.tests[activeCase-1].expected}/>
           </div>
         </div>
       </div>

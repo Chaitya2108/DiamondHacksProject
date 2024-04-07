@@ -14,8 +14,8 @@ export const QuizContent = ({joinCode}) => {
     starterCode: '',
     language: 'js',
     tests: [
-      {input: '', output: ''},
-      {input: '', output: ''},
+      {input: '', expected: ''},
+      {input: '', expected: ''},
     ]
   });
 
