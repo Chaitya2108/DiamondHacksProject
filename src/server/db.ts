@@ -1,4 +1,4 @@
-import type { IClass, IStudent, ISubmission } from "./types";
+import type { IClass, IStudent, ISubmission, ITestCase } from "./types";
 
 const classes = new Map<string, IClass>();
 
@@ -15,13 +15,13 @@ export const db = {
             return joinCode;
         },
 
-        pushAssignment: async (joinCode: string, question: string, tests: string[]) => {
+        pushAssignment: async (joinCode: string, prompt: string, starterCode: string, tests: ITestCase[]) => {
             const classToJoin = classes.get(joinCode);
             // check class exists
             if (classToJoin === undefined) {
                 throw new Error("Class does not exist");
             }
-            classToJoin.assignment = { question, tests, submissions: new Map<string, ISubmission>() }
+            classToJoin.assignment = { prompt, starterCode, tests, submissions: new Map<string, ISubmission>() }
         }
     },
     student: {
@@ -49,7 +49,7 @@ export const db = {
             if (classToJoin.assignment === null) {
                 return null;
             }
-            return { question: classToJoin.assignment.question };
+            return { prompt: classToJoin.assignment.prompt, starterCode: classToJoin.assignment.starterCode };
         },
 
         submitAssignment: async(joinCode: string, studentId: string, submission: string) => {
@@ -65,8 +65,9 @@ export const db = {
             if (submissions.get(studentId)) {
                 // cancel or remove previous submission
             }
-            submissions.set(studentId, { id: crypto.randomUUID(), studentId, submission, result: null });
-            // run code
+            const submissionId = crypto.randomUUID()
+            submissions.set(studentId, { id: submissionId, studentId, submission, results: null });
+            // TODO run code
         }
     },
 }
