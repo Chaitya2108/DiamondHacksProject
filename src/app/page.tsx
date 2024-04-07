@@ -7,8 +7,9 @@ import { CreatePost } from "~/app/_components/create-post";
 import { useRouter } from "next/navigation";
 import {redirect} from "next/navigation";
 import React, { use, useState } from 'react';
-import { FormEvent, ChangeEvent } from 'react';
+import { type FormEvent, ChangeEvent } from 'react';
 import qs from 'qs';
+import { api } from "~/trpc/react";
 
 
 function InstBar() {
@@ -26,11 +27,16 @@ function InstBar() {
       [fieldName]: fieldValue
     }))
   }
+
+  const createInstructorMutate = api.instructor.create.useMutation()
+
   const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(formData)
     const queryString = qs.stringify(formData);
-    router.push(`/instructor?${queryString}`)
+    const joinCode = await createInstructorMutate.mutateAsync({ name: formData.username })
+    localStorage.setItem('formData',JSON.stringify({ username: formData.username, joinCode }))
+    router.push('/instructor');
   }
 
   return(

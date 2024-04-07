@@ -12,24 +12,25 @@ export interface IStudent {
 export interface IAssignment {
     prompt: string;
     starterCode: string;
+    language: 'js' | 'py';
     tests: ITestCase[];
     submissions: Map<string, ISubmission>;
 }
 
 export interface ITestCase {
-    input: string;
-    output: string;
+    input: (string | number)[];
+    expected: string | number;
 }
 
 export interface ISubmission {
     id: string;
     studentId: string;
     submission: string;
-    results: ITestCaseResult[] | null;
+    results: ITestCaseResult[] | null | string;
 }
 
 export interface ITestCaseResult {
     name: string;
     passed: boolean;
-    message: string | undefined;
+    msg: string | undefined;
 }

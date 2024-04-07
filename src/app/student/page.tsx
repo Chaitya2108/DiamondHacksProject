@@ -26,7 +26,7 @@ export default function Student({
     <div className="flex col" style={{width: "100vw", height: "100vh"}}>
     <div className="w-screen">
       {/* api needs to pass this */}
-        <TopNavbar classNum="CSE 30" ID={name}/>
+        <TopNavbar classNum={parsed.classid} ID={name}/>
     </div>
     <div className='flex' style={{height: "100%"}}>
         <SideNavbar />     

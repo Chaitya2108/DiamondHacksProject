@@ -1,4 +1,5 @@
-import type { IClass, IStudent, ISubmission, ITestCase } from "./types";
+import { runTests } from "./queue";
+import type { IClass, IStudent, ISubmission, ITestCase, ITestCaseResult } from "./types";
 
 const classes = new Map<string, IClass>();
 
@@ -15,13 +16,13 @@ export const db = {
             return joinCode;
         },
 
-        pushAssignment: async (joinCode: string, prompt: string, starterCode: string, tests: ITestCase[]) => {
+        pushAssignment: async (joinCode: string, prompt: string, starterCode: string, language: 'js' | 'py', tests: ITestCase[]) => {
             const classToJoin = classes.get(joinCode);
             // check class exists
             if (classToJoin === undefined) {
                 throw new Error("Class does not exist");
             }
-            classToJoin.assignment = { prompt, starterCode, tests, submissions: new Map<string, ISubmission>() }
+            classToJoin.assignment = { prompt, starterCode, language, tests, submissions: new Map<string, ISubmission>() }
         },
 
         clearAssignment: async (joinCode: string) => {
@@ -100,8 +101,15 @@ export const db = {
                 // TODO cancel or remove previous submission
             }
             const submissionId = crypto.randomUUID()
-            submissions.set(studentId, { id: submissionId, studentId, submission, results: null });
-            // TODO run code
+            const submissionObj: ISubmission = { id: submissionId, studentId, submission, results: null };
+            submissions.set(studentId, submissionObj);
+            let testResults;
+            try {
+                testResults = await runTests({ id: submissionId, lang: classToJoin.assignment.language, tests: classToJoin.assignment.tests, submission});
+                submissionObj.results = testResults;
+            } catch (e) {
+                submissionObj.results = "Error";
+            }
         },
 
         viewResults: async (joinCode: string, studentId: string) => {
