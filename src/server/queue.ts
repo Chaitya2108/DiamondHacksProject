@@ -13,7 +13,7 @@ const jsonSchema = z.object({
   lang: z.enum(["js", "py"]),
   tests: z.array(
     z.object({
-      input: z.union([z.string(), z.number()]),
+      input: z.array(z.union([z.string(), z.number()])),
       expected: z.union([z.string(), z.number()]),
     }),
   ),
@@ -35,7 +35,7 @@ const resultSchema = z.array(
 
 type testInput = z.infer<typeof jsonSchema>;
 
-export async function runTests(data: { id: string; data: testInput }) {
+export async function runTests(data: testInput) {
   const body = JSON.stringify(data);
 
   const channel = await connection.createChannel();
@@ -64,3 +64,17 @@ export async function runTests(data: { id: string; data: testInput }) {
     });
   });
 }
+
+console.log(
+  await runTests({
+    id: "123",
+    lang: "js",
+    tests: [
+      { input: [1, 1], expected: 2 },
+      { input: [1, 2], expected: 3 },
+      { input: [1, 5], expected: 3 },
+      { input: [5], expected: 3 },
+    ],
+    submission: `function add(a, b) { return a + b; }`,
+  }),
+);

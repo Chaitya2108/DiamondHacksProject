@@ -7,12 +7,15 @@ import JavaScript from "tree-sitter-javascript";
 import Python from "tree-sitter-python";
 
 import "dotenv/config";
+import { exec } from "child_process";
 
 const url = process.env.AMQP_URL;
 const user = process.env.AMQP_USER;
 const pass = process.env.AMQP_PASS;
 
 main();
+
+let active = 0;
 
 async function main() {
   console.log(generateTestfile("js", [{ input: [1, 2], expected: 3 }]));
@@ -34,8 +37,6 @@ async function main() {
   channel.prefetch(1);
 
   console.log(" [*] Waiting for messages jobs");
-
-  let active = 0;
 
   channel.consume("jobs", async (msg) => {
     if (!msg) {
@@ -73,23 +74,39 @@ const jsonSchema = z.object({
 });
 
 async function handle(json: z.infer<typeof jsonSchema>) {
-  console.log(" [*] Received %s", json.id);
+  console.log(" [*] Received %s", json);
 
   return new Promise((resolve, reject) => {
-    // exec(
-    //   `docker run --rm -v ${folder}:/app/test runner node /app/run.cjs ${lang}`,
-    //   (err, stdout, stderr) => {
-    //     if (err) {
-    //       console.error(err);
-    //     }
-    //
-    //     console.log(stdout);
-    //     console.error(stderr);
-    //
-    //     active--;
-    //   },
-    // );
-    // active++;
+    const proc = exec(
+      `docker run --rm -i runner node /app/run.cjs ${json.lang}`,
+      { },
+      (err, stdout, stderr) => {
+        if (err) {
+          console.error(err);
+        }
+
+        console.log(stdout);
+
+        const res = JSON.parse(stdout);
+
+        resolve(res.tests);
+
+        active--;
+      },
+    );
+
+    proc.stdin.write(editSubmission(json.lang, json.submission));
+    proc.stdin.write("🨫");
+    proc.stdin.write(generateTestfile(json.lang, json.tests));
+    proc.stdin.end();
+
+    active++;
+
+    setTimeout(() => {
+      reject("timeout");
+      active--;
+    }
+    , 10000);
   });
 }
 
@@ -100,21 +117,21 @@ function generateTestfile(
   if (lang === "js") {
     return `const func = require("./submission")
 ${tests
-        .map(
-          (test, i) => `test("test_${i + 1}", () => {
+  .map(
+    (test, i) => `test("test_${i + 1}", () => {
   expect(func(${test.input.map((x) => (typeof x === "string" ? `"${x}"` : x)).join(", ")})).toBe(${typeof test.expected === "string" ? `"${test.expected}"` : test.expected})
 })`,
-        )
-        .join("\n")}
+  )
+  .join("\n")}
 `;
   } else if (lang === "py") {
     return `from submission import func
 ${tests
-        .map(
-          (test, i) => `def test_${i + 1}():
+  .map(
+    (test, i) => `def test_${i + 1}():
   assert func(${test.input.map((x) => (typeof x === "string" ? `"${x}"` : x)).join(", ")}) == ${test.expected}`,
-        )
-        .join("\n")}
+  )
+  .join("\n")}
 `;
   } else {
     throw new Error("unsupported lang");
@@ -137,7 +154,9 @@ function editSubmission(lang: string, submission: string) {
     }
 
     const func = funcs[0];
-    const name = func!.children.find((node) => node.type === "identifier")?.text;
+    const name = func!.children.find(
+      (node) => node.type === "identifier",
+    )?.text;
 
     if (name === undefined) {
       throw new Error("function name not found");
@@ -173,7 +192,10 @@ function editSubmission(lang: string, submission: string) {
       throw new Error("function name not found");
     }
 
-    submission = submission.slice(0, ident!.startIndex) + "func" + submission.slice(ident!.endIndex);
+    submission =
+      submission.slice(0, ident!.startIndex) +
+      "func" +
+      submission.slice(ident!.endIndex);
 
     return submission;
   } else {
