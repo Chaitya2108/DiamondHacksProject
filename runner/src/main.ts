@@ -18,10 +18,6 @@ main();
 let active = 0;
 
 async function main() {
-  console.log(generateTestfile("js", [{ input: [1, 2], expected: 3 }]));
-  console.log(editSubmission("js", "function add(a, b) { return a + b }"));
-  console.log(editSubmission("py", "def add(a, b):\n  return a + b"));
-
   if (url === undefined || user === undefined || pass === undefined) {
     throw new Error("AMQP_URL, AMQP_USER, AMQP_PASS must be set");
   }
@@ -36,7 +32,7 @@ async function main() {
 
   channel.prefetch(1);
 
-  console.log(" [*] Waiting for messages jobs");
+  console.error(" [*] Waiting for messages jobs");
 
   channel.consume("jobs", async (msg) => {
     if (!msg) {
@@ -74,20 +70,21 @@ const jsonSchema = z.object({
 });
 
 async function handle(json: z.infer<typeof jsonSchema>) {
-  console.log(" [*] Received %s", json);
+  console.log(" [*] Received %s", json.id);
 
   return new Promise((resolve, reject) => {
     const proc = exec(
       `docker run --rm -i runner node /app/run.cjs ${json.lang}`,
-      { },
-      (err, stdout, stderr) => {
+      { timeout: 5000 },
+      (err, stdout, _stderr) => {
         if (err) {
-          console.error(err);
+          console.error(" [x] Error %s", json.id, err);
+          reject(err);
         }
 
-        console.log(stdout);
-
         const res = JSON.parse(stdout);
+
+        console.log(" [*] Done %s", json.id);
 
         resolve(res.tests);
 
@@ -101,12 +98,6 @@ async function handle(json: z.infer<typeof jsonSchema>) {
     proc.stdin.end();
 
     active++;
-
-    setTimeout(() => {
-      reject("timeout");
-      active--;
-    }
-    , 10000);
   });
 }
 
@@ -117,21 +108,21 @@ function generateTestfile(
   if (lang === "js") {
     return `const func = require("./submission")
 ${tests
-  .map(
-    (test, i) => `test("test_${i + 1}", () => {
+        .map(
+          (test, i) => `test("test_${i + 1}", () => {
   expect(func(${test.input.map((x) => (typeof x === "string" ? `"${x}"` : x)).join(", ")})).toBe(${typeof test.expected === "string" ? `"${test.expected}"` : test.expected})
 })`,
-  )
-  .join("\n")}
+        )
+        .join("\n")}
 `;
   } else if (lang === "py") {
     return `from submission import func
 ${tests
-  .map(
-    (test, i) => `def test_${i + 1}():
+        .map(
+          (test, i) => `def test_${i + 1}():
   assert func(${test.input.map((x) => (typeof x === "string" ? `"${x}"` : x)).join(", ")}) == ${test.expected}`,
-  )
-  .join("\n")}
+        )
+        .join("\n")}
 `;
   } else {
     throw new Error("unsupported lang");
