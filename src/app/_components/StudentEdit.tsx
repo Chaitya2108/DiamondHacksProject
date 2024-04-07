@@ -31,7 +31,6 @@ export const StudentEdit = ({ joinCode, id }: {joinCode: string, id: string}) =>
   const handleChange = (e) => {
     setCode(e.target.value)
   }
-
     return (
       <div className="flex col full-size">
           <div className="flex" style={{width: "100%", height: "3rem", borderBottom: "2px solid #dcdcdc", alignItems: "center", padding: "1rem"}}>
