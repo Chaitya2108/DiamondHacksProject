@@ -18,7 +18,7 @@ export default function Instructor({
       <TopNavbar classNum={data['className']} ID={data['joinCode']} />
       <div className='flex' style={{height: "100%"}}>
         <SideNavbar />
-        <QuizContent />
+        <QuizContent joinCode={data['joinCode']}/>
       </div>
     </div>
   );

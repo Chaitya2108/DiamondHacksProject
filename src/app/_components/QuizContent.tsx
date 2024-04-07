@@ -1,11 +1,37 @@
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { QuizEdit } from "./QuizEdit"
 import { QuizResult } from "./QuizResult";
+import { api } from "~/trpc/react";
 
-export const QuizContent = () => {
+export const QuizContent = ({joinCode}) => {
   const [isShowResult, setShowResult] = useState(false);
+  const assignInstructorMutate = api.instructor.assign.useMutation()
+  const [formData, setFormData] = useState({
+    joinCode: joinCode,
+    prompt: '',
+    starterCode: '',
+    language: 'js',
+    tests: [
+      {input: '', expected: ''},
+      {input: '', expected: ''},
+    ]
+  });
+
+  useEffect(() => {
+    console.log(`formData: ${JSON.stringify(formData)}`)
+  }, [formData])
+
+  const publish = async () => {
+    await assignInstructorMutate.mutateAsync({ 
+      joinCode: joinCode,
+      prompt: formData.prompt,
+      starterCode: formData.starterCode,
+      language: formData.language,
+      tests: formData.tests,
+    })
+  }
 
   const ActionButtons = () => {
     if(isShowResult) {
@@ -20,7 +46,7 @@ export const QuizContent = () => {
         <>
           <div style={{width: "21.5rem", height: "100%"}}/>
           <button className="btn">Clear</button>
-          <button className="btn">Publish</button>
+          <button className="btn" onClick={()=>publish()}>Publish</button>
           <button className="btn" onClick={()=>setShowResult(true)}>Result</button>
         </>
       )
@@ -33,7 +59,7 @@ export const QuizContent = () => {
         <h2>Problem 6</h2>
         <ActionButtons />
       </div>
-      {!isShowResult ? <QuizEdit /> : <QuizResult />}
+      {!isShowResult ? <QuizEdit formData={formData} setFormData={(v)=>setFormData(v)} /> : <QuizResult />}
     </div>
   )
 }
