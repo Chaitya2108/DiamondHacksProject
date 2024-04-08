@@ -1,6 +1,6 @@
 # DiamondHacksProject
 
-Diamond Hacks Project - Chaitya, Eric, Scott, Aidan
+Diamond Hacks Project - Chaitya, Eric, Scott, Aiden
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
